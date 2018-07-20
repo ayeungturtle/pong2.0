@@ -1,0 +1,24 @@
+h1 {
+  color: green;
+  text-align: center;
+}
+
+.alert-bottom {
+    position: fixed;
+    bottom: 5px;
+    right: 2%;
+    height: 50px;
+    padding: 10px;
+}
+
+.header-row {
+    margin: 15px;
+}
+
+.red {
+    background-color: red
+}  
+
+.add-player {
+    height: 100%;
+}
