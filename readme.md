@@ -6,6 +6,12 @@ This time, the goal is to understand how all the pieces of the stack fit togethe
 
 When it is finished, it will be deployed locally on an old Linux laptop at the IQ office to track game statistics and betting ledgers.
 
+4.  Stats Display:
+![](https://github.com/ayeungturtle/gifs/blob/master/pong2.0/displaysStats.gif)
+
+3.  Scoreboard styling and Recent Games History:
+![](https://github.com/ayeungturtle/gifs/blob/master/pong2.0/stylingAndRecentGames.gif)
+
 2.  Ping King (King of the Table) player ordering:
 ![](https://github.com/ayeungturtle/gifs/blob/master/pingKingOrder.gif)
 

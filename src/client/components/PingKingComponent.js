@@ -38,6 +38,7 @@ export class PingKingComponent extends React.Component {
         this.submitGame = this.submitGame.bind(this);
         this.queueLoser = this.queueLoser.bind(this);
         this.addRecentGame = this.addRecentGame.bind(this);
+        this.formatPercent = this.formatPercent.bind(this);
     }
 
     componentDidMount() {
@@ -263,66 +264,36 @@ export class PingKingComponent extends React.Component {
         this.setState({ recentGames: [newGame].concat(this.state.recentGames) });
     }
 
+    formatPercent(decimal) {
+        const percent = Math.round(decimal * 100).toString();
+        return (percent + "%");
+    }
+
     render() {
         return (
             <Row>
-                <Col md={3} sm={3}>
+                <Row className="white-divider"/>
+                <Col md={3} sm={3} >
                     <Row>
-                        {/* <Select>
-                            name="addPlayer"
-                            placeholder="Add Player"
-                            searchable={true}
-                            clearable={true}
-                            onChange={this.enqueuePlayer}
-                            options={this.props.players.map(player => {
-                                return {...player, value: player.id, label: player.FirstName + " " + player.LastName };
-                                }
-                            )}
-                        </Select> */}
-                        <Col md={8} sm={8}>
-                            <DropdownButton id="Add Player" title="Add Player" onSelect={(event) => this.enqueuePlayer(event)}>
-                                {
-                                    this.state.inactivePlayers.map((player, index) => {
-                                        return(
-                                            <MenuItem eventKey={player} key={index}>{this.formatPlayerName(player)}</MenuItem>
-                                        )
-                                    })
-                                }
-                            </DropdownButton>
-                            {/* <FormGroup controlId="addPlayer">
-                                <ControlLabel>Add Player</ControlLabel>
-                                <FormControl
-                                    onChange={on()this.selectPlayer()} 
-                                    componentClass="select" 
-                                    placeholder="select player..."
-                                    id="addPlayer"
-                                >
-                                    {
-                                        this.state.inactivePlayers.map((player, index) => {
-                                            return(
-                                                <option 
-                                                    onClick={() => this.selectPlayer(player)} 
-                                                    key={index} 
-                                                    value={player}>{this.formatPlayerName(player)}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </FormControl>
-                            </FormGroup> */}
-                        </Col>
-                        {/* <Col md={4} sm={4}>
-                            <button onClick={this.enqueuePlayer}>+</button>
-                        </Col> */}
+                        <DropdownButton  bsStyle="warning" id="Add Player" title="Players" onSelect={(event) => this.enqueuePlayer(event)}>
+                            {
+                                this.state.inactivePlayers.map((player, index) => {
+                                    return(
+                                        <MenuItem eventKey={player} key={index}>{this.formatPlayerName(player)}</MenuItem>
+                                    )
+                                })
+                            }
+                        </DropdownButton>
                     </Row>
+                    <Row className="white-divider"/>
                     <Row>
                         <ListGroup>
                             {
                                 this.state.playerQueue.map((player, index) => {
                                     return(
-                                        <ListGroupItem key={index} value={player}>
+                                        <ListGroupItem key={index} value={player} className="player-queue">
                                             {this.formatPlayerName(player)}
-                                            <button className="pull-right" onClick={() => this.removeFromQueue(player)}>-</button>
+                                            <button className="pull-right round-button" onClick={() => this.removeFromQueue(player)}></button>
                                         </ListGroupItem>
                                     )
                                 })
@@ -330,40 +301,117 @@ export class PingKingComponent extends React.Component {
                         </ListGroup>
                     </Row>
                 </Col>
-                <Col md={3} sm={3} className="text-center">
-                    <Row >
-                        <h1 onClick={() => this.incrementScore("player2")} > {this.state.player2Score} </h1>
-                        <button onClick={() => this.decrementScore("player2")}>-</button>
-                    </Row>
-                    { this.state.player2 !== null && this.state.player2 !== "" &&
-                        <h1>
-                            {this.formatPlayerName(this.state.player2)}
-                        </h1>
-                    }
-                </Col>
-                <Col md={3} sm={3} className="text-center">
+                <Col md={6} sm={6}>
                     <Row>
-                        <h1 onClick={() => this.incrementScore("player1")} > {this.state.player1Score} </h1>
-                        <button onClick={() => this.decrementScore("player1")}>-</button>
+                        <Col md={6} sm={6} className="player player2">
+                            <Row >
+                                <div onClick={() => this.incrementScore("player2")} className="score-number"> {this.state.player2Score} </div>
+                                <button onClick={() => this.decrementScore("player2")} className="score-decrementer"></button>
+                                { this.state.player2 !== null && this.state.player2 !== "" &&
+                                    <div className>
+                                        {this.formatPlayerName(this.state.player2)}
+                                    </div>
+                                }
+                                { this.state.player2 !== null && this.state.player2.nickName !== null &&
+                                    <div>
+                                        {'"' + this.state.player2.nickName + '"'}
+                                    </div>
+                                }
+                            </Row>
+                        </Col>
+                        <Col md={6} sm={6} className="player player1">
+                            <Row>
+                                <div onClick={() => this.incrementScore("player1")} className="score-number"> {this.state.player1Score} </div>
+                                <button onClick={() => this.decrementScore("player1")} className="score-decrementer"></button>
+                                { this.state.player1 !== null && this.state.player1 !== "" &&
+                                    <div>
+                                        {this.formatPlayerName(this.state.player1)}
+                                    </div>
+                                }
+                                { this.state.player1 !== null && this.state.player1.nickName !== null &&
+                                    <div>
+                                        {'"' + this.state.player1.nickName + '"'}
+                                    </div>
+                                }
+                            </Row>
+                        </Col>
                     </Row>
-                    { this.state.player1 !== null && this.state.player1 !== "" &&
-                        <h1>
-                            {this.formatPlayerName(this.state.player1)}
-                        </h1>
-                    }
+                    <Row>
+                        <Col md={4} sm={4} className="playerStats playerStats2">
+                            <Row className="player-stats-row">
+                                {
+                                    this.state.stats.player2.totalWins !== null && this.state.stats.player2.totalLosses !== null &&
+                                        <span className="playerStatsContent">{this.state.stats.player2.totalWins + " - " + this.state.stats.player2.totalLosses}</span>
+                                }
+                            </Row>
+                            <Row className="player-stats-row">
+                                {
+                                    this.state.stats.player2.h2hWins !== null &&
+                                        <span className="playerStatsContent">{this.state.stats.player2.h2hWins}</span>
+                                }
+                            </Row>
+                            <Row className="player-stats-row">
+                                {
+                                    this.state.stats.player2.winProbability !== null &&
+                                        <span className="playerStatsContent">{this.formatPercent(this.state.stats.player2.winProbability)}</span>
+                                }
+                            </Row>
+                            <Row className="player-stats-row">
+                                
+                            </Row>
+                        </Col>
+                        <Col md={4} sm={4} className="playerStats playerStatsCenter">
+                            <Row className="player-stats-row">
+                                Overall Record
+                            </Row>
+                            <Row className="player-stats-row">
+                                H2H Wins
+                            </Row>
+                            <Row className="player-stats-row">
+                                Win Probability
+                            </Row>
+                            <Row className="player-stats-row">
+                                Streak
+                            </Row>
+                        </Col>
+                        <Col md={4} sm={4} className="playerStats playerStats1">
+                            <Row className="player-stats-row">
+                                {
+                                    this.state.stats.player1.totalWins !== null && this.state.stats.player1.totalLosses !== null &&
+                                        <span>{this.state.stats.player1.totalWins + " - " + this.state.stats.player1.totalLosses}</span>
+                                }
+                            </Row>
+                            <Row className="player-stats-row">
+                                {
+                                    this.state.stats.player1.h2hWins !== null &&
+                                        <span>{this.state.stats.player1.h2hWins}</span>
+                                }
+                            </Row>
+                            <Row className="player-stats-row">
+                                {
+                                    this.state.stats.player1.winProbability !== null &&
+                                        <span>{this.formatPercent(this.state.stats.player1.winProbability)}</span>
+                                }
+                            </Row>
+                            <Row className="player-stats-row">
+                                
+                            </Row>
+                        </Col>
+                    </Row>
                 </Col>
                 <Col md={3} sm={3}>
                     <Row>
                         <Button className="pull-right" bsStyle="success" onClick={this.submitGame}>
-                            SUBMIT
+                            Submit
                         </Button>  
-                    </Row> 
+                    </Row>
+                    <Row className="white-divider"/>
                     <Row>
                         <ListGroup>
                             {
                                 this.state.recentGames.map((game, index) => {
                                     return(
-                                        <ListGroupItem key={index} value={game}>
+                                        <ListGroupItem key={index} value={game} className="recent-games">
                                             {
                                                 game.winner === 1 ?
                                                     <span>
