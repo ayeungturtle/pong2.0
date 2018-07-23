@@ -10,7 +10,7 @@ Game Modes:
 1) Ping King - Similar to King of the Hill, with the winning player staying on the table.  Active players are in a queue and automatically get cycled into play after games are submitted.
 2) Random Robin - Active Players are selected, and a round of matchups is randomly created.  Each player gets at least one match.  If the total number of Active Players is odd, one random player will play twice.  When a round completes, another round is automatically generated.
 
-5 - Random Robin Game Mode:
+5 - Random Robin Game Mode: 
 ![](https://github.com/ayeungturtle/gifs/blob/master/pong2.0/randomRobin.gif)
 
 4 - Stats Display:
