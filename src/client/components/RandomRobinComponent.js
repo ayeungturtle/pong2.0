@@ -318,22 +318,25 @@ export class RandomRobinComponent extends React.Component {
                             Round +
                         </Button>
                     </Row>
-                    <Row className="white-divider"/>
-                    <Row>
-                        <div className="title-round">Active Players:</div>
-                        <ListGroup>
-                            {
-                                this.state.activePlayers.map((player, index) => {
-                                    return(
-                                        <ListGroupItem key={index} value={player} className="active-players">
-                                            {this.formatPlayerName(player)}
-                                            <button className="pull-right button-x" onClick={() => this.deactivatePlayer(player)}>X</button>
-                                        </ListGroupItem>
-                                    )
-                                })
-                            }                 
-                        </ListGroup>
-                    </Row>
+                    <br/>
+                    {
+                        this.state.activePlayers.length > 0 && 
+                        <Row>
+                            <div className="title-round">Active Players:</div>
+                            <ListGroup>
+                                {
+                                    this.state.activePlayers.map((player, index) => {
+                                        return(
+                                            <ListGroupItem key={index} value={player} className="active-players">
+                                                {this.formatPlayerName(player)}
+                                                <button className="pull-right button-x" onClick={() => this.deactivatePlayer(player)}>X</button>
+                                            </ListGroupItem>
+                                        )
+                                    })
+                                }                 
+                            </ListGroup>
+                        </Row>
+                    }
                     <br/>
                     <Row>
                         <Col md={6} sm={6}>
@@ -364,7 +367,7 @@ export class RandomRobinComponent extends React.Component {
                                             {
                                                 this.state.nextRound.map((match, index) => {
                                                     return(
-                                                        <ListGroupItem key={index} value={match} className="player-queue">
+                                                        <ListGroupItem key={index} value={match} className="round-queue">
                                                             {this.formatMatchName(match)}
                                                         </ListGroupItem>
                                                     )
