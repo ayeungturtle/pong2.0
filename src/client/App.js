@@ -4,6 +4,7 @@ import { NewPlayerModalComponent } from './components/NewPlayerModalComponent';
 import { AlertComponent } from './components/AlertComponent';
 import { PingKingComponent } from './components/PingKingComponent';
 import { NewPlayerComponent } from './components/NewPlayerComponent';
+import { RandomRobinComponent } from './components/RandomRobinComponent';
 
 export default class App extends Component {
     constructor(props) {
@@ -123,7 +124,9 @@ export default class App extends Component {
                                 />
                             </Tab>
                             <Tab eventKey={1} title="Random Robin">
-                                rando
+                                <RandomRobinComponent
+                                alertGameSaved={(success, newGame) => this.alertGameSaved(success, newGame)}                                
+                                />
                             </Tab>
                             <Tab eventKey={2} title="New Player">
                                 <NewPlayerComponent 

@@ -11,7 +11,7 @@ router.post('/api/games', (req, res) => {
         loserId: req.body.loserId,
         winnerScore: req.body.winnerScore,
         loserScore: req.body.loserScore,
-        isTournamentGame: req.body.isTournamentGame
+        gameMode: req.body.gameMode
     })
     .then(addedGame => {
         res.status(201).json({  // !!!! can I get these properties from addedGame directly
@@ -19,7 +19,7 @@ router.post('/api/games', (req, res) => {
             loserId: req.body.loserId,
             winnerScore: req.body.winnerScore,
             loserScore: req.body.loserScore,
-            isTournamentGame: req.body.isTournamentGame
+            gameMode: req.body.gameMode
         })
     })
     .catch((error) => {

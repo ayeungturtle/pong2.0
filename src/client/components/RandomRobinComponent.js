@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Alert, Modal, Button, Glyphicon, FormGroup, Select, Row, FormControl, DropdownButton, MenuItem, Col, ControlLabel, ListGroup, ListGroupItem } from 'react-bootstrap';
 
-export class PingKingComponent extends React.Component {
+export class RandomRobinComponent extends React.Component {
     constructor(props, context) {
         super(props, context);
         
         this.state = {
-            playerQueue: [],
+            activePlayers: [],
             inactivePlayers: [],
             selectedPlayer: null,
             player1: null,
@@ -27,18 +27,21 @@ export class PingKingComponent extends React.Component {
                     winProbability: null
                 }
             },
-            recentGames: []
+            recentGames: [],
+            currentRound: [],
+            nextRound: []
         };
         
         this.getPlayers = this.getPlayers.bind(this);
-        this.enqueuePlayer = this.enqueuePlayer.bind(this);
-        this.removeFromQueue = this.removeFromQueue.bind(this);
+        this.activatePlayer = this.activatePlayer.bind(this);
+        this.deactivatePlayer = this.deactivatePlayer.bind(this);
         this.incrementScore = this.incrementScore.bind(this);
         this.decrementScore = this.decrementScore.bind(this);
         this.submitGame = this.submitGame.bind(this);
-        this.queueLoser = this.queueLoser.bind(this);
+        this.queueGame = this.queueGame.bind(this);
         this.addRecentGame = this.addRecentGame.bind(this);
         this.formatPercent = this.formatPercent.bind(this);
+        this.createNewRound = this.createNewRound.bind(this);
     }
 
     componentDidMount() {
@@ -59,40 +62,30 @@ export class PingKingComponent extends React.Component {
         });
     };
 
-    enqueuePlayer(selectedPlayer) {
+    activatePlayer(selectedPlayer) {
         if (selectedPlayer != null) {
             const tempInactivePlayers = this.state.inactivePlayers;
             this.state.inactivePlayers.forEach((player, index) => {
                 if (player.id === selectedPlayer.id)
                     tempInactivePlayers.splice(index, 1);
-            });
-            if (this.state.player1 == null) {
-                this.setState({ inactivePlayers: tempInactivePlayers, player1: selectedPlayer });
-            } 
-            else if (this.state.player2 == null) {
-                this.setState({ inactivePlayers: tempInactivePlayers, player2: selectedPlayer }, () => {
-                    this.getStats();
-                });
-            }
-            else {
-                this.setState((prevState) => ({ 
-                    playerQueue: prevState.playerQueue.concat(selectedPlayer), 
+            });          
+            this.setState((prevState) => ({ 
+                    activePlayers: prevState.activePlayers.concat(selectedPlayer), 
                     inactivePlayers: tempInactivePlayers 
-                }));
-            }
+            }));
         }
     }
 
-    removeFromQueue(removePlayer) {
+    deactivatePlayer(removePlayer) {
         var tempInactivePlayers = this.state.inactivePlayers;
-        var tempPlayerQueue = this.state.playerQueue;
+        var tempActivePlayers = this.state.activePlayers;
         var nextInactivePlayerString;
         var previousInactivePlayerString;
         var removePlayerString;
         if (removePlayer != null) {
-            this.state.playerQueue.forEach((queuedPlayer, index) => {
-                if (queuedPlayer.id === removePlayer.id)
-                    tempPlayerQueue.splice(index, 1);
+            this.state.activePlayers.forEach((activePlayer, index) => {
+                if (activePlayer.id === removePlayer.id)
+                    tempActivePlayers.splice(index, 1);
             });
             for (var i = 0; i < this.state.inactivePlayers.length; i++) {
                 nextInactivePlayerString = this.formatPlayerName(this.state.inactivePlayers[i]).toLowerCase();
@@ -113,7 +106,7 @@ export class PingKingComponent extends React.Component {
                 }   
             }
         }
-        this.setState({ inactivePlayers: tempInactivePlayers, playerQueue: tempPlayerQueue })
+        this.setState({ inactivePlayers: tempInactivePlayers, activePlayers: tempActivePlayers })
     }
 
     incrementScore(player) {
@@ -178,7 +171,7 @@ export class PingKingComponent extends React.Component {
             loserId,
             winnerScore,
             loserScore,
-            gameMode: 1
+            gameMode: 2,
         };
         confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1) )
         fetch('api/games', {
@@ -200,7 +193,7 @@ export class PingKingComponent extends React.Component {
                         winner = 2;
                     this.props.alertGameSaved(true, {winner: winner, player1Result: player1Result, player2Result: player2Result});
                     this.addRecentGame({winner: winner, player1Result: player1Result, player2Result: player2Result});
-                    this.queueLoser(loserId);  
+                    this.queueGame();  
                 });
             }
             else {
@@ -209,40 +202,26 @@ export class PingKingComponent extends React.Component {
         })
     }
 
-    queueLoser(loserId) {
-        if (loserId === null || loserId === undefined)
-            return;
+    queueGame() {
         this.setState({player1Score: 0, player2Score: 0});
-        if (loserId === this.state.player2.id) {
-            if (this.state.playerQueue.length === 0)
+        if (this.state.currentRound.length === 0) {
+            var currentRoundTemp = [...this.state.nextRound];
+            this.setState({
+                player1: currentRoundTemp[0].player1,
+                player2: currentRoundTemp[0].player2,
+                currentRound: currentRoundTemp.slice(1),
+                nextRound: this.createNewRound(this.state.activePlayers)
+            }, () => {
                 this.getStats();
-            else {
-                this.setState((prevState) => ({
-                    playerQueue: [...prevState.playerQueue.slice(1), prevState.player2],
-                    player2: prevState.playerQueue[0]
-                }), () => {
-                    this.getStats();
-                });
-            }
-        }
-        else if (loserId === this.state.player1.id) {
-            if (this.state.playerQueue.length === 0) {
-                this.setState((prevState) => ({
-                    player1: prevState.player2,
-                    player2: prevState.player1
-                }), () => {
-                    this.getStats();                    
-                });
-            }
-            else {
-                this.setState((prevState) => ({
-                    playerQueue: [...prevState.playerQueue.slice(1), prevState.player1],
-                    player1: prevState.player2,
-                    player2: prevState.playerQueue[0]
-                }), () => {
-                    this.getStats();
-                });
-            }
+            });
+        } else {
+            this.setState((prevState) => ({
+                player1: prevState.currentRound[0].player1,
+                player2: prevState.currentRound[0].player2,
+                currentRound: prevState.currentRound.slice(1)
+            }), () => {
+                this.getStats();
+            });
         }
     }
   
@@ -275,13 +254,58 @@ export class PingKingComponent extends React.Component {
         return (percent + "%");
     }
 
+    formatMatchName(match) {
+        var string = match.player2.firstName + " - " + match.player1.firstName;
+        return string;
+    }
+
+    createNewRound(players) {
+        if (players == null || players.length < 2)
+            return [];
+        var playersArray = [...players];
+        var matchesArray = [];
+        var randomIndex;
+        var player1;
+        var player2;
+        for (var i = players.length; i > 0; i--) {
+            randomIndex = Math.round(Math.random() * 1000) % i;
+            player1 = playersArray[randomIndex];
+            playersArray.splice(randomIndex, 1);
+            i--;
+            if (i === 0) {   // if no one is left to match up with player1
+                randomIndex = Math.round(Math.random() * 1000) % players.length;
+                while (players[randomIndex] == player1)
+                    randomIndex = Math.round(Math.random() * 1000) % players.length;
+                player2 = players[randomIndex];
+            } else {
+                randomIndex = Math.round(Math.random() * 1000) % i;
+                player2 = playersArray[randomIndex];
+                playersArray.splice(randomIndex, 1);                
+            }
+            matchesArray.push({player1, player2});
+        }
+        return matchesArray;
+    }
+
+    handleRoundButton() {
+        var currentRound = this.createNewRound(this.state.activePlayers);
+        this.setState({
+            player1: currentRound[0].player1,
+            player2: currentRound[0].player2,
+            currentRound: currentRound.slice(1),
+            nextRound: this.createNewRound(this.state.activePlayers)
+        }, () => {
+            this.getStats();            
+        });
+    }
+
     render() {
         return (
             <Row>
                 <Row className="white-divider"/>
                 <Col md={3} sm={3} >
                     <Row>
-                        <DropdownButton  bsStyle="warning" id="Add Player" title="Players" onSelect={(event) => this.enqueuePlayer(event)}>
+                        <DropdownButton  bsStyle="warning" id="Add Player" title="Players" onSelect={(event) => this.activatePlayer(event)}>
                             {
                                 this.state.inactivePlayers.map((player, index) => {
                                     return(
@@ -290,21 +314,66 @@ export class PingKingComponent extends React.Component {
                                 })
                             }
                         </DropdownButton>
+                        <Button className="button-round-generate" bsStyle="warning" onClick={() => this.handleRoundButton()}>
+                            Round +
+                        </Button>
                     </Row>
                     <Row className="white-divider"/>
                     <Row>
+                        <div className="title-round">Active Players:</div>
                         <ListGroup>
                             {
-                                this.state.playerQueue.map((player, index) => {
+                                this.state.activePlayers.map((player, index) => {
                                     return(
-                                        <ListGroupItem key={index} value={player} className="player-queue">
+                                        <ListGroupItem key={index} value={player} className="active-players">
                                             {this.formatPlayerName(player)}
-                                            <button className="pull-right button-x" onClick={() => this.removeFromQueue(player)}>X</button>
+                                            <button className="pull-right button-x" onClick={() => this.deactivatePlayer(player)}>X</button>
                                         </ListGroupItem>
                                     )
                                 })
                             }                 
                         </ListGroup>
+                    </Row>
+                    <br/>
+                    <Row>
+                        <Col md={6} sm={6}>
+                            {
+                                this.state.currentRound.length > 0 &&
+                                <Row>
+                                    <div className="title-round">Current Round:</div>
+                                    <ListGroup>
+                                        {
+                                            this.state.currentRound.map((match, index) => {
+                                                return(
+                                                    <ListGroupItem key={index} value={match} className="round-queue">
+                                                        {this.formatMatchName(match)}
+                                                    </ListGroupItem>
+                                                )
+                                            })
+                                        }                 
+                                    </ListGroup>
+                                </Row>
+                            }
+                        </Col>
+                        <Col md={6} sm={6}>
+                            {
+                                this.state.nextRound.length > 0 &&
+                                    <Row>
+                                        <div className="title-round">Next Round:</div>
+                                        <ListGroup>
+                                            {
+                                                this.state.nextRound.map((match, index) => {
+                                                    return(
+                                                        <ListGroupItem key={index} value={match} className="player-queue">
+                                                            {this.formatMatchName(match)}
+                                                        </ListGroupItem>
+                                                    )
+                                                })
+                                            }                 
+                                        </ListGroup>
+                                    </Row>
+                            }
+                        </Col>
                     </Row>
                 </Col>
                 <Col md={6} sm={6}>

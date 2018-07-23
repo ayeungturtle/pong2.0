@@ -1,9 +1,25 @@
+.active-players {
+    width: 90%;
+    float: left;
+}
+
 .alert-bottom {
     position: fixed;
     bottom: 5px;
     right: 2%;
     height: 50px;
     padding: 10px;
+}
+
+.button-x {
+    background-color: rgb(192, 192, 192);
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
+
+.button-round-generate {
+    margin-left: 75px;
 }
 
 .header-row {
@@ -22,6 +38,17 @@
 .darkPlayer2 {
     background-color: hsla(219, 58%, 49%, 0.527); 
     color: white;   
+}
+
+.dismiss-player-button {
+    background-color:  black; 
+    color: white;
+    height: 20px;
+    width: 20px;
+    font-size: 8px;
+    text-align: center;
+    border-style: solid;
+    border-color: black;
 }
 
 .gray-background {
@@ -50,6 +77,11 @@
 .player-queue {
     width: 90%;
     float: left;
+}
+
+.round-queue {
+    width: 100%;
+    text-align: center;
 }
 
 .playerStats {
@@ -92,6 +124,7 @@
     width: 90%;
     float: right;
     font-size: 12px;
+    text-align: center;
 }
 
 .round-button {
@@ -120,6 +153,12 @@
     font-size: 30px;
     font-weight: 1000;
     height: 25px;
+}
+
+.title-round {
+    text-align: left;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .white-divider {
