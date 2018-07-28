@@ -18,13 +18,15 @@ export class RandomRobinComponent extends React.Component {
                     totalWins: null,
                     totalLosses: null,
                     h2hWins: null,
-                    winProbability: null
+                    winProbability: null,
+                    streak: null
                 },
                 player2: {
                     totalWins: null,
                     totalLosses: null,
                     h2hWins: null,
-                    winProbability: null
+                    winProbability: null,
+                    streak: null
                 }
             },
             recentGames: [],
@@ -421,23 +423,26 @@ export class RandomRobinComponent extends React.Component {
                             <Row className="player-stats-row">
                                 {
                                     this.state.stats.player2.totalWins !== null && this.state.stats.player2.totalLosses !== null &&
-                                        <span className="playerStatsContent">{this.state.stats.player2.totalWins + " - " + this.state.stats.player2.totalLosses}</span>
+                                        <span>{this.state.stats.player2.totalWins + " - " + this.state.stats.player2.totalLosses}</span>
                                 }
                             </Row>
                             <Row className="player-stats-row">
                                 {
                                     this.state.stats.player2.h2hWins !== null &&
-                                        <span className="playerStatsContent">{this.state.stats.player2.h2hWins}</span>
+                                        <span>{this.state.stats.player2.h2hWins}</span>
                                 }
                             </Row>
                             <Row className="player-stats-row">
                                 {
                                     this.state.stats.player2.winProbability !== null &&
-                                        <span className="playerStatsContent">{this.formatPercent(this.state.stats.player2.winProbability)}</span>
+                                        <span>{this.formatPercent(this.state.stats.player2.winProbability)}</span>
                                 }
                             </Row>
                             <Row className="player-stats-row">
-                                
+                                {
+                                    this.state.stats.player2.streak !== null &&
+                                        <span>{this.state.stats.player2.streak}</span>
+                                }
                             </Row>
                         </Col>
                         <Col md={4} sm={4} className="playerStats playerStatsCenter">
@@ -474,7 +479,10 @@ export class RandomRobinComponent extends React.Component {
                                 }
                             </Row>
                             <Row className="player-stats-row">
-                                
+                                {
+                                    this.state.stats.player1.streak !== null &&
+                                        <span>{this.state.stats.player1.streak}</span>
+                                }
                             </Row>
                         </Col>
                     </Row>

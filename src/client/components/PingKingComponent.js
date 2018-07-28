@@ -18,13 +18,15 @@ export class PingKingComponent extends React.Component {
                     totalWins: null,
                     totalLosses: null,
                     h2hWins: null,
-                    winProbability: null
+                    winProbability: null,
+                    streak: null
                 },
                 player2: {
                     totalWins: null,
                     totalLosses: null,
                     h2hWins: null,
-                    winProbability: null
+                    winProbability: null,
+                    streak: null
                 }
             },
             recentGames: []
@@ -153,6 +155,7 @@ export class PingKingComponent extends React.Component {
         const player2 = this.state.player2;
         const player1Score = this.state.player1Score;
         const player2Score = this.state.player2Score;
+        const stats = this.state.stats;
         var winnerId;
         var loserId;
         var winnerScore;
@@ -162,12 +165,16 @@ export class PingKingComponent extends React.Component {
             loserId = player2.id;
             winnerScore = player1Score;
             loserScore = player2Score;
+            winnerStats = stats.player1;
+            loserStats = stats.player2;
         }
         else if (player2Score > player1Score) {
             winnerId = player2.id;
             loserId = player1.id;
             winnerScore = player2Score;
             loserScore = player1Score;
+            winnerStats = stats.player2;
+            loserStats = stats.player1;
         }
         else {
             alert("There are no ties in ping pong, you fool.");
@@ -178,6 +185,8 @@ export class PingKingComponent extends React.Component {
             loserId,
             winnerScore,
             loserScore,
+            winnerStats,
+            loserStats,
             gameMode: 1
         };
         confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1) )
@@ -365,7 +374,10 @@ export class PingKingComponent extends React.Component {
                                 }
                             </Row>
                             <Row className="player-stats-row">
-                                
+                                {
+                                    this.state.stats.player2.streak !== null &&                                    
+                                        <span>{this.state.stats.player2.streak}</span>
+                                }
                             </Row>
                         </Col>
                         <Col md={4} sm={4} className="playerStats playerStatsCenter">
@@ -402,7 +414,10 @@ export class PingKingComponent extends React.Component {
                                 }
                             </Row>
                             <Row className="player-stats-row">
-                                
+                                {
+                                    this.state.stats.player1.streak !== null &&
+                                        <span>{this.state.stats.player1.streak}</span>
+                                }
                             </Row>
                         </Col>
                     </Row>

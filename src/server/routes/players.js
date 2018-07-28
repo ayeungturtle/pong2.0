@@ -58,13 +58,15 @@ router.get('/api/players/stats/:id1/:id2', (req, res) => {
             totalWins: null,
             totalLosses: null,
             h2hWins: null,
-            winProbability: null
+            winProbability: null,
+            streak: null
         },
         player2: {
             totalWins: null,
             totalLosses: null,
             h2hWins: null,
-            winProbability: null
+            winProbability: null,
+            streak: null
         }  
     };
     var totalWinPercentage1 = .5;
@@ -72,40 +74,22 @@ router.get('/api/players/stats/:id1/:id2', (req, res) => {
     var h2hWinPercentage1 = .5;
     var h2hWinPercentage2 = .5;
 
-    db('games')
-    .where({ winnerId: req.params.id1 })
-    .count({ count: '*' })
-    .first()
+    db('games').where({ winnerId: req.params.id1 }).count({ count: '*' }).first()
     .then(p1TotalWins => {
         stats.player1.totalWins = p1TotalWins.count;
-        db('games')
-        .where({ winnerId: req.params.id2 })
-        .count({ count: '*' })
-        .first()
+        db('games').where({ winnerId: req.params.id2 }).count({ count: '*' }).first()
         .then(p2TotalWins => {
             stats.player2.totalWins = p2TotalWins.count;    
-            db('games')
-            .where({ loserId: req.params.id1 })
-            .count({ count: '*' })
-            .first()
+            db('games').where({ loserId: req.params.id1 }).count({ count: '*' }).first()
             .then(p1TotalLosses => {
                 stats.player1.totalLosses = p1TotalLosses.count;
-                db('games')
-                .where({ loserId: req.params.id2 })
-                .count({ count: '*' })
-                .first()
+                db('games').where({ loserId: req.params.id2 }).count({ count: '*' }).first()
                 .then(p2TotalLosses => {
                     stats.player2.totalLosses = p2TotalLosses.count;
-                    db('games')
-                    .where({ winnerId: req.params.id1, loserId: req.params.id2 })
-                    .count({ count: '*' })
-                    .first()
+                    db('games').where({ winnerId: req.params.id1, loserId: req.params.id2 }).count({ count: '*' }).first()
                     .then(p1h2hWins => {
                         stats.player1.h2hWins = p1h2hWins.count;
-                        db('games')
-                        .where({ winnerId: req.params.id2, loserId: req.params.id1 })
-                        .count({ count: '*' })
-                        .first()
+                        db('games').where({ winnerId: req.params.id2, loserId: req.params.id1 }).count({ count: '*' }).first()
                         .then(p2h2hWins => {
                             stats.player2.h2hWins = p2h2hWins.count;
                             if (p1TotalWins.count != 0 || p1TotalLosses.count != 0)
@@ -124,7 +108,33 @@ router.get('/api/players/stats/:id1/:id2', (req, res) => {
                             const winProbability2 = 1 / ( 1 + (1 / winCompare2));
                             stats.player1.winProbability = winProbability1;
                             stats.player2.winProbability = winProbability2;
-                            res.status(200).json(stats);
+                            db('games').where({ loserId: req.params.id1 }).orderBy('id', 'desc').first()
+                            .then(p1LastLoss => {
+                                db('games').where('winnerId', req.params.id1).andWhere('id', '>', p1LastLoss.id).count({ count: '*' }).first()
+                                .then(p1Streak => {
+                                    stats.player1.streak = p1Streak.count;
+                                    db('games').where({ loserId: req.params.id2 }).orderBy('id', 'desc').first()
+                                    .then(p2LastLoss => {
+                                        db('games').where('winnerId', req.params.id2).andWhere('id', '>', p2LastLoss.id).count({ count: '*' }).first()
+                                        .then(p2Streak => {
+                                            stats.player2.streak = p2Streak.count;
+                                            res.status(200).json(stats);
+                                        })
+                                        .catch((error) => {
+                                            res.status(500).json({ error });
+                                        });
+                                    })
+                                    .catch((error) => {
+                                        res.status(500).json({ error });
+                                    });
+                                })
+                                .catch((error) => {
+                                    res.status(500).json({ error });
+                                });
+                            })
+                            .catch((error) => {
+                                res.status(500).json({ error });
+                            });
                         })
                         .catch((error) => {
                             res.status(500).json({ error });
