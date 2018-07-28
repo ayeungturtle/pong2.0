@@ -160,6 +160,8 @@ export class PingKingComponent extends React.Component {
         var loserId;
         var winnerScore;
         var loserScore;
+        var winnerStats;
+        var loserStats;
         if (player1Score > player2Score) {
             winnerId = player1.id;
             loserId = player2.id;

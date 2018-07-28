@@ -21,11 +21,30 @@ router.post('/api/games', (req, res) => {
             winnerScore: req.body.winnerScore,
             loserScore: req.body.loserScore,
             lutGameMode: req.body.gameMode,
+            awards: []
         }
-        //// Achievements
-        // if (req.body.)
-        // db('achievements')
-        res.status(201).json(resBody)
+
+        ///////////////////// Achievements
+
+        //////// Streaks
+        var streakAwardId = null;
+        if ((req.body.winnerStats.streak + 1) % 5 === 0)    // add one because another game has been won
+            streakAwardId = (req.body.winnerStats.streak + 1) / 5;
+        if (streakAwardId !== null) {
+            db('achievements')
+            .insert({
+                playerId: req.body.winnerId,
+                lutAchievementTypeId: streakAwardId
+            })
+            .catch((error) => {
+                res.status(500).json({ error })
+            });
+            resBody.awards.push({
+                    playerId: req.body.winnerId,
+                    lutAchievementTypeId: streakAwardId     
+            })             
+        }
+        res.status(201).json(resBody);
     })
     .catch((error) => {
         res.status(500).json({ error })
