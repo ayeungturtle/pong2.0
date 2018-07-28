@@ -173,6 +173,8 @@ export class RandomRobinComponent extends React.Component {
             loserId,
             winnerScore,
             loserScore,
+            winnerStats,
+            loserStats,
             gameMode: 2,
         };
         confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1) )
