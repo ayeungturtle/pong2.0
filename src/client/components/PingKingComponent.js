@@ -29,7 +29,8 @@ export class PingKingComponent extends React.Component {
                     streak: null
                 }
             },
-            recentGames: []
+            gameFeed: [],
+            achievementFeed: []
         };
         
         this.getPlayers = this.getPlayers.bind(this);
@@ -157,14 +158,18 @@ export class PingKingComponent extends React.Component {
         const player2Score = this.state.player2Score;
         const stats = this.state.stats;
         var winnerId;
+        var winnerName;
         var loserId;
+        var loserName;
         var winnerScore;
         var loserScore;
         var winnerStats;
         var loserStats;
         if (player1Score > player2Score) {
             winnerId = player1.id;
+            winnerName = player1.firstName + ' ' + player1.lastName;
             loserId = player2.id;
+            loserName = player2.firstName + ' ' + player2.lastName;
             winnerScore = player1Score;
             loserScore = player2Score;
             winnerStats = stats.player1;
@@ -172,7 +177,9 @@ export class PingKingComponent extends React.Component {
         }
         else if (player2Score > player1Score) {
             winnerId = player2.id;
+            winnerName = player2.firstName + ' ' + player2.lastName;            
             loserId = player1.id;
+            loserName = player2.firstName + ' ' + player2.lastName;            
             winnerScore = player2Score;
             loserScore = player1Score;
             winnerStats = stats.player2;
@@ -184,7 +191,9 @@ export class PingKingComponent extends React.Component {
         }
         var newGame = {
             winnerId,
+            winnerName,
             loserId,
+            loserName,
             winnerScore,
             loserScore,
             winnerStats,
@@ -200,7 +209,7 @@ export class PingKingComponent extends React.Component {
         .then(res => {
             if (res.status === 201) {
                 res.json()
-                .then(() => {
+                .then(response => {
                     var gameResult;
                     var player2Result = this.formatPlayerName(player2) + " " + player2Score;
                     var player1Result = player1Score + " " + this.formatPlayerName(player1);
@@ -209,13 +218,13 @@ export class PingKingComponent extends React.Component {
                         winner = 1;
                     if (winnerId === player2.id)
                         winner = 2;
-                    this.props.alertGameSaved(true, {winner: winner, player1Result: player1Result, player2Result: player2Result});
                     this.addRecentGame({winner: winner, player1Result: player1Result, player2Result: player2Result});
+                    this.setState((prevState) => ({ achievementFeed: response.achievements.concat(prevState.achievementFeed)}));
                     this.queueLoser(loserId);  
                 });
             }
             else {
-                this.props.alertGameSaved(false, null);              
+                this.props.alertGameSaveFailure();              
             }
         })
     }
@@ -278,7 +287,7 @@ export class PingKingComponent extends React.Component {
     }
 
     addRecentGame(newGame) {
-        this.setState({ recentGames: [newGame].concat(this.state.recentGames) });
+        this.setState({ gameFeed: [newGame].concat(this.state.gameFeed) });
     }
 
     formatPercent(decimal) {
@@ -432,11 +441,11 @@ export class PingKingComponent extends React.Component {
                     </Row>
                     <Row className="white-divider"/>
                     <Row>
-                        <ListGroup>
+                        <ListGroup className="game-feed">
                             {
-                                this.state.recentGames.map((game, index) => {
+                                this.state.gameFeed.map((game, index) => {
                                     return(
-                                        <ListGroupItem key={index} value={game} className="recent-games">
+                                        <ListGroupItem key={index} value={game} className="recent-game">
                                             {
                                                 game.winner === 1 ?
                                                     <span>
@@ -448,6 +457,24 @@ export class PingKingComponent extends React.Component {
                                                         <b>{ game.player2Result }</b>
                                                         <span>{ " - " + game.player1Result }</span>
                                                     </span>
+                                            }
+                                        </ListGroupItem>
+                                    )
+                                })
+                            }                 
+                        </ListGroup>
+                    </Row>
+                    <Row>
+                        <ListGroup className="achievement-feed">
+                            {
+                                this.state.achievementFeed.map((achievement, index) => {
+                                    return(
+                                        <ListGroupItem key={index} value={achievement} className="recent-game" bsStyle="info">
+                                            {
+                                                <span>
+                                                    <b>{ achievement.playerName + " - "}</b>
+                                                    <b>{ achievement.achievementName }</b>
+                                                </span>
                                             }
                                         </ListGroupItem>
                                     )

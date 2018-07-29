@@ -21,27 +21,46 @@ router.post('/api/games', (req, res) => {
             winnerScore: req.body.winnerScore,
             loserScore: req.body.loserScore,
             lutGameMode: req.body.gameMode,
-            awards: []
+            achievements: []
         }
 
         ///////////////////// Achievements
 
+        const achievementNames = {    // matches lut_achievement_types table
+            1: "Winning Spree",
+            2: "Winning Frenzy",
+            3: "Running Riot",
+            4: "Rampage",
+            5: "Untouchable",
+            6: "Invincible",
+            7: "Inconceivable",
+            8: "Unfriggenbelievable",
+            9: "Whatisgoingon?",
+            10: "Pong King",
+            11: "Donut",
+            12: "King Donut",
+            13: "Buzzkill",
+            14: "Upset",
+            15: "Underdog Hero"
+        }
+
         //////// Streaks
-        var streakAwardId = null;
-        if ((req.body.winnerStats.streak + 1) % 5 === 0)    // add one because another game has been won
-            streakAwardId = (req.body.winnerStats.streak + 1) / 5;
-        if (streakAwardId !== null) {
+
+        var streakId = null;
+        if ((req.body.winnerStats.streak + 1) % 5 === 0 && req.body.winnerStats.streak < 50)    // add one because another game has been won, <50 because streak awards only go up to 50
+            streakId = (req.body.winnerStats.streak + 1) / 5;
+        if (streakId !== null) {
             db('achievements')
             .insert({
                 playerId: req.body.winnerId,
-                lutAchievementTypeId: streakAwardId
+                lutAchievementTypeId: streakId
             })
             .catch((error) => {
                 res.status(500).json({ error })
             });
-            resBody.awards.push({
-                    playerId: req.body.winnerId,
-                    lutAchievementTypeId: streakAwardId     
+            resBody.achievements.push({
+                playerName: req.body.winnerName,
+                achievementName: achievementNames[streakId]     
             })             
         }
         res.status(201).json(resBody);

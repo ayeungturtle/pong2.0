@@ -11,24 +11,13 @@ export default class App extends Component {
         super(props);
 
         this.state = {
-            players: [],
             newPlayerModal: false,
             newPlayer: {
                 firstName: null,
                 lastName: null,
                 nickName: null
             },
-            alertType: 0,
-            pingKing: {
-                players: [],
-                activePlayers: [],
-                inactivePlayers: []
-            },
-            lastGameSaved: {
-                winner: null,
-                player1Result: null,
-                player2Result: null
-            }
+            alerts: [],
         };
 
         this.showNewPlayerModal = this.showNewPlayerModal.bind(this);
@@ -36,7 +25,7 @@ export default class App extends Component {
         this.saveNewPlayer = this.saveNewPlayer.bind(this);
         this.dismissAlert = this.dismissAlert.bind(this);
         this.getPlayers = this.getPlayers.bind(this);
-        this.alertGameSaved = this.alertGameSaved.bind(this);
+        this.alertGameSaveFailure = this.alertGameSaveFailure.bind(this);
     }
 
     componentDidMount() {
@@ -79,33 +68,31 @@ export default class App extends Component {
             if (res.status === 201) {
                 const newPlayer = res.json()
                 .then(newPlayer => {
-                    this.setState({
+                    this.setState((prevState) => ({
                         newPlayer:{
                             firstName: newPlayer.firstName,
                             lastName: newPlayer.lastName,
                             nickName: newPlayer.nickName
                         },
-                        alertType: 1
-                    })
+                        alerts: [...prevState.alerts, {alertType: 1, newPlayer: newPlayer}]    /////!!!!! used to just be 1
+                    }))
                 });
                 setTimeout(() => this.dismissAlert(), 5000);
             }
             else {
-                this.setState({ alertType: 2 });
+                this.setState((prevState) => ({ alerts: [...prevState.alerts, {alertType: 2 }]}));
                 setTimeout(() => this.dismissAlert(), 5000);                
             }
         })
     }
 
-    alertGameSaved(success, newGame) {
-        if (success) {
-            this.setState({ alertType: 3, lastGameSaved: newGame });
-            setTimeout(() => this.dismissAlert(), 5000);
-        } 
-        else {
-            this.setState({ alertType: 4 });
-            setTimeout(() => this.dismissAlert(), 5000);
-        }
+    alertGameSaveFailure() {
+        this.setState({ alertType: 4 });
+        setTimeout(() => this.dismissAlert(), 5000);
+    }
+
+    alertAchievement(player, lutAchievementTypeId) {
+        this.setState({ alertType})
     }
 
     dismissAlert() {
@@ -120,7 +107,7 @@ export default class App extends Component {
                         <Tabs defaultActiveKey={0} id="Game Mode Tabs">
                             <Tab eventKey={0} title="Ping King">
                                 <PingKingComponent
-                                alertGameSaved={(success, newGame) => this.alertGameSaved(success, newGame)}
+                                alertGameSaveFailure={() => this.alertGameSaveFailure()}
                                 />
                             </Tab>
                             <Tab eventKey={1} title="Random Robin">
@@ -150,12 +137,15 @@ export default class App extends Component {
                     hideNewPlayerModal={this.hideNewPlayerModal}
                     saveNewPlayer={(newPlayer) => this.saveNewPlayer(newPlayer)}
                 />
-                <AlertComponent
-                    alertType={this.state.alertType}
-                    newPlayer={this.state.newPlayer}
-                    dismissAlert={this.dismissAlert}
-                    lastGameSaved={this.state.lastGameSaved}
-                />
+                <div className="alert-bottom">
+                    <AlertComponent
+                        alertType={this.state.alertType}
+                        newPlayer={this.state.newPlayer}
+                        dismissAlert={this.dismissAlert}
+                        lastGameSaved={this.state.lastGameSaved}
+                    />
+                </div>
+
             </Grid>
         );
     }

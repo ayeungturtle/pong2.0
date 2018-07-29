@@ -7,7 +7,7 @@
     position: fixed;
     bottom: 5px;
     right: 2%;
-    height: 50px;
+    height: 200px;
     padding: 10px;
 }
 
@@ -120,9 +120,26 @@
     border-width: 0px 0px 4px 0px;
 }
 
-.recent-games {
+.game-feed {
+    height: 300px;
+    overflow-y: auto;
     width: 90%;
     float: right;
+}
+
+.recent-game {
+    font-size: 12px;
+    text-align: center;
+}
+
+.achievement-feed {
+    height: 130px;
+    overflow-y: auto;
+    width: 90%;
+    float: right;
+}
+
+.recent-achievement {
     font-size: 12px;
     text-align: center;
 }

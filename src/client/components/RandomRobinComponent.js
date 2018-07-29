@@ -29,7 +29,8 @@ export class RandomRobinComponent extends React.Component {
                     streak: null
                 }
             },
-            recentGames: [],
+            gameFeed: [],
+            achievementFeed: [],
             currentRound: [],
             nextRound: []
         };
@@ -72,8 +73,8 @@ export class RandomRobinComponent extends React.Component {
                     tempInactivePlayers.splice(index, 1);
             });          
             this.setState((prevState) => ({ 
-                    activePlayers: prevState.activePlayers.concat(selectedPlayer), 
-                    inactivePlayers: tempInactivePlayers 
+                activePlayers: prevState.activePlayers.concat(selectedPlayer), 
+                inactivePlayers: tempInactivePlayers 
             }));
         }
     }
@@ -250,7 +251,7 @@ export class RandomRobinComponent extends React.Component {
     }
 
     addRecentGame(newGame) {
-        this.setState({ recentGames: [newGame].concat(this.state.recentGames) });
+        this.setState({ gameFeed: [newGame].concat(this.state.gameFeed) });
     }
 
     formatPercent(decimal) {
@@ -499,7 +500,7 @@ export class RandomRobinComponent extends React.Component {
                     <Row>
                         <ListGroup>
                             {
-                                this.state.recentGames.map((game, index) => {
+                                this.state.gameFeed.map((game, index) => {
                                     return(
                                         <ListGroupItem key={index} value={game} className="recent-games">
                                             {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Modal, Button, FormGroup, FormControl, Col, ControlLabel } from 'react-bootstrap';
+import { Alert, Modal, Button, FormGroup, FormControl, Col, ControlLabel, Row } from 'react-bootstrap';
 
 export class AlertComponent extends React.Component {
     constructor(props, context) {
@@ -11,7 +11,7 @@ export class AlertComponent extends React.Component {
                 newPlayerSaveSuccess: 1,
                 newPlayerSaveFailure: 2,
                 gameSaveSuccess: 3,
-                gameSaveFailure: 4
+                gameSaveFailure: 4,
             }
         };
     }
@@ -27,14 +27,14 @@ export class AlertComponent extends React.Component {
                 break;
             case this.state.alertTypes.newPlayerSaveFailure:
                 return (
-                    <Alert bsStyle="danger" className="alert-bottom" onDismiss={this.props.dismissAlert}>
+                    <Alert bsStyle="danger" className="pull-down" onDismiss={this.props.dismissAlert}>
                        New player failed to save.
                     </Alert>
                 );
                 break;
             case this.state.alertTypes.gameSaveSuccess:
                 return (
-                    <Alert bsStyle="success" className="alert-bottom" onDismiss={this.props.dismissAlert}>
+                    <Alert bsStyle="success" onDismiss={this.props.dismissAlert}>
                         {
                             this.props.lastGameSaved.winner === 1 ?
                                 <span>
@@ -55,6 +55,13 @@ export class AlertComponent extends React.Component {
                 return (
                     <Alert bsStyle="danger" className="alert-bottom" onDismiss={this.props.dismissAlert}>
                        Game failed to save.
+                    </Alert>
+                );
+                break;
+            case 100:
+                return (
+                    <Alert bsStyle="info" onDismiss={this.props.dismissAlert}>
+                       fafgaasgagasdg.
                     </Alert>
                 );
                 break;
