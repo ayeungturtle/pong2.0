@@ -38,7 +38,7 @@ router.post('/api/games', (req, res) => {
             9: "Whatisgoingon?",
             10: "Pong King",
             11: "Donut",
-            12: "King Donut",
+            12: "Mega Donut",
             13: "Buzzkill",
             14: "Upset",
             15: "Underdog Hero"
@@ -53,7 +53,8 @@ router.post('/api/games', (req, res) => {
             db('achievements')
             .insert({
                 playerId: req.body.winnerId,
-                lutAchievementTypeId: streakId
+                lutAchievementTypeId: streakId,
+                victimId: req.body.loserId                
             })
             .catch((error) => {
                 res.status(500).json({ error })
@@ -63,6 +64,78 @@ router.post('/api/games', (req, res) => {
                 achievementName: achievementNames[streakId]     
             })             
         }
+        
+        //////// Donuts
+
+        var donutId = null;
+        if (req.body.loserScore === 0) {
+            if (req.body.winnerScore >= 10)
+                donutId = 12;   //  Mega Donut
+            else if (req.body.winnerScore >= 5)
+                donutId = 11;  // Donut
+        }
+
+        if (donutId != null) {
+            db('achievements')
+            .insert({
+                playerId: req.body.winnerId,
+                lutAchievementTypeId: donutId,
+                victimId: req.body.loserId                
+            })
+            .catch((error) => {
+                res.status(500).json({ error })
+            });
+            resBody.achievements.push({
+                playerName: req.body.winnerName,
+                achievementName: achievementNames[donutId]  ,
+                victimName: req.body.loserName  
+            })  
+        }
+        
+        //////// Buzzkill
+
+        if (req.body.loserStats.streak >= 5) {
+            db('achievements')
+            .insert({
+                playerId: req.body.winnerId,
+                lutAchievementTypeId: 13,
+                victimId: req.body.loserId
+            })
+            .catch((error) => {
+                res.status(500).json({ error })
+            });
+            resBody.achievements.push({
+                playerName: req.body.winnerName,
+                achievementName: "Buzzkill",
+                victimName: req.body.loserName                      
+            }) 
+        }
+        
+        //////// Upsets
+
+        var upsetId = null;
+        if (req.body.winnerStats.winProbability <= .15)
+            upsetId = 15;
+        else if (req.body.winnerStats.winProbability <= .33)
+            upsetId = 14;
+        
+        if (upsetId != null) {
+            db('achievements')
+            .insert({
+                playerId: req.body.winnerId,
+                lutAchievementTypeId: upsetId,
+                victimId: req.body.loserId
+            })
+            .catch((error) => {
+                res.status(500).json({ error })
+            });
+            resBody.achievements.push({
+                playerName: req.body.winnerName,
+                achievementName: achievementNames[upsetId],
+                victimName: req.body.loserName                      
+            }) 
+        }
+        
         res.status(201).json(resBody);
     })
     .catch((error) => {

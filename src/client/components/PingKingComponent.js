@@ -179,7 +179,7 @@ export class PingKingComponent extends React.Component {
             winnerId = player2.id;
             winnerName = player2.firstName + ' ' + player2.lastName;            
             loserId = player1.id;
-            loserName = player2.firstName + ' ' + player2.lastName;            
+            loserName = player1.firstName + ' ' + player1.lastName;            
             winnerScore = player2Score;
             loserScore = player1Score;
             winnerStats = stats.player2;
@@ -474,6 +474,7 @@ export class PingKingComponent extends React.Component {
                                                 <span>
                                                     <b>{ achievement.playerName + " - "}</b>
                                                     <b>{ achievement.achievementName }</b>
+                                                    <b>{achievement.victimName !== undefined ? " (" + achievement.victimName + ")" : ""}</b>
                                                 </span>
                                             }
                                         </ListGroupItem>
