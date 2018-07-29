@@ -200,33 +200,37 @@ export class PingKingComponent extends React.Component {
             loserStats,
             gameMode: 1
         };
-        confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1) )
-        fetch('api/games', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify (newGame)
-        })
-        .then(res => {
-            if (res.status === 201) {
-                res.json()
-                .then(response => {
-                    var gameResult;
-                    var player2Result = this.formatPlayerName(player2) + " " + player2Score;
-                    var player1Result = player1Score + " " + this.formatPlayerName(player1);
-                    var winner;
-                    if (winnerId === player1.id)
-                        winner = 1;
-                    if (winnerId === player2.id)
-                        winner = 2;
-                    this.addRecentGame({winner: winner, player1Result: player1Result, player2Result: player2Result});
-                    this.setState((prevState) => ({ achievementFeed: response.achievements.concat(prevState.achievementFeed)}));
-                    this.queueLoser(loserId);  
-                });
-            }
-            else {
-                this.props.alertGameSaveFailure();              
-            }
-        })
+        const gameConfirm = confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1));
+        if (gameConfirm) {
+            fetch('api/games', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify (newGame)
+            })
+            .then(res => {
+                if (res.status === 201) {
+                    res.json()
+                    .then(response => {
+                        var gameResult;
+                        var player2Result = this.formatPlayerName(player2) + " " + player2Score;
+                        var player1Result = player1Score + " " + this.formatPlayerName(player1);
+                        var winner;
+                        if (winnerId === player1.id)
+                            winner = 1;
+                        if (winnerId === player2.id)
+                            winner = 2;
+                        this.addRecentGame({winner: winner, player1Result: player1Result, player2Result: player2Result});
+                        this.setState((prevState) => ({ achievementFeed: response.achievements.concat(prevState.achievementFeed)}));
+                        this.queueLoser(loserId);  
+                    });
+                }
+                else {
+                    this.props.alertGameSaveFailure();              
+                }
+            })
+        }
+        else
+            return;
     }
 
     queueLoser(loserId) {
