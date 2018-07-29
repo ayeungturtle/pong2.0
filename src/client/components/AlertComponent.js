@@ -58,13 +58,6 @@ export class AlertComponent extends React.Component {
                     </Alert>
                 );
                 break;
-            case 100:
-                return (
-                    <Alert bsStyle="info" onDismiss={this.props.dismissAlert}>
-                       fafgaasgagasdg.
-                    </Alert>
-                );
-                break;
             default:
                 return null;
         }
