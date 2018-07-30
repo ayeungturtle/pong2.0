@@ -200,8 +200,8 @@ export class PingKingComponent extends React.Component {
             loserStats,
             gameMode: 1
         };
-        const gameConfirm = confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1));
-        if (gameConfirm) {
+        const gameConfirmed = confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1));
+        if (gameConfirmed) {
             fetch('api/games', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -229,8 +229,6 @@ export class PingKingComponent extends React.Component {
                 }
             })
         }
-        else
-            return;
     }
 
     queueLoser(loserId) {

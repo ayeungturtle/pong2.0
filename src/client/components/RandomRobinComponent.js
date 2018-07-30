@@ -149,21 +149,34 @@ export class RandomRobinComponent extends React.Component {
         const player2 = this.state.player2;
         const player1Score = this.state.player1Score;
         const player2Score = this.state.player2Score;
+        const stats = this.state.stats;
         var winnerId;
+        var winnerName;
         var loserId;
+        var loserName;
         var winnerScore;
-        var loserScore;
+        var loserScore;       
+        var winnerStats;
+        var loserStats;
         if (player1Score > player2Score) {
             winnerId = player1.id;
+            winnerName = player1.firstName + ' ' + player1.lastName;
             loserId = player2.id;
+            loserName = player2.firstName + ' ' + player2.lastName;
             winnerScore = player1Score;
             loserScore = player2Score;
+            winnerStats = stats.player1;
+            loserStats = stats.player2;
         }
         else if (player2Score > player1Score) {
             winnerId = player2.id;
+            winnerName = player2.firstName + ' ' + player2.lastName;            
             loserId = player1.id;
+            loserName = player1.firstName + ' ' + player1.lastName;            
             winnerScore = player2Score;
             loserScore = player1Score;
+            winnerStats = stats.player2;
+            loserStats = stats.player1;
         }
         else {
             alert("There are no ties in ping pong, you fool.");
@@ -171,40 +184,44 @@ export class RandomRobinComponent extends React.Component {
         }
         var newGame = {
             winnerId,
+            winnerName,
             loserId,
+            loserName,
             winnerScore,
             loserScore,
             winnerStats,
             loserStats,
             gameMode: 2,
         };
-        confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1) )
-        fetch('api/games', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify (newGame)
-        })
-        .then(res => {
-            if (res.status === 201) {
-                res.json()
-                .then(() => {
-                    var gameResult;
-                    var player2Result = this.formatPlayerName(player2) + " " + player2Score;
-                    var player1Result = player1Score + " " + this.formatPlayerName(player1);
-                    var winner;
-                    if (winnerId === player1.id)
-                        winner = 1;
-                    if (winnerId === player2.id)
-                        winner = 2;
-                    this.props.alertGameSaved(true, {winner: winner, player1Result: player1Result, player2Result: player2Result});
-                    this.addRecentGame({winner: winner, player1Result: player1Result, player2Result: player2Result});
-                    this.queueGame();  
-                });
-            }
-            else {
-                this.props.alertGameSaved(false, null);              
-            }
-        })
+        const gameConfirmed = confirm(this.formatPlayerName(player2) + " " + player2Score + " - " + player1Score + " " + this.formatPlayerName(player1));
+        if (gameConfirmed) {
+            fetch('api/games', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify (newGame)
+            })
+            .then(res => {
+                if (res.status === 201) {
+                    res.json()
+                    .then(response => {
+                        var gameResult;
+                        var player2Result = this.formatPlayerName(player2) + " " + player2Score;
+                        var player1Result = player1Score + " " + this.formatPlayerName(player1);
+                        var winner;
+                        if (winnerId === player1.id)
+                            winner = 1;
+                        if (winnerId === player2.id)
+                            winner = 2;
+                        this.addRecentGame({winner: winner, player1Result: player1Result, player2Result: player2Result});
+                        this.setState((prevState) => ({ achievementFeed: response.achievements.concat(prevState.achievementFeed)}));                        
+                        this.queueGame();  
+                    });
+                }
+                else {
+                    this.props.alertGameSaveFailure();              
+                }
+            })
+        }
     }
 
     queueGame() {
@@ -498,11 +515,11 @@ export class RandomRobinComponent extends React.Component {
                     </Row>
                     <Row className="white-divider"/>
                     <Row>
-                        <ListGroup>
+                        <ListGroup className="game-feed">
                             {
                                 this.state.gameFeed.map((game, index) => {
                                     return(
-                                        <ListGroupItem key={index} value={game} className="recent-games">
+                                        <ListGroupItem key={index} value={game} className="recent-game">
                                             {
                                                 game.winner === 1 ?
                                                     <span>
@@ -514,6 +531,25 @@ export class RandomRobinComponent extends React.Component {
                                                         <b>{ game.player2Result }</b>
                                                         <span>{ " - " + game.player1Result }</span>
                                                     </span>
+                                            }
+                                        </ListGroupItem>
+                                    )
+                                })
+                            }                 
+                        </ListGroup>
+                    </Row>
+                    <Row>
+                        <ListGroup className="achievement-feed">
+                            {
+                                this.state.achievementFeed.map((achievement, index) => {
+                                    return(
+                                        <ListGroupItem key={index} value={achievement} className="recent-game" bsStyle="info">
+                                            {
+                                                <span>
+                                                    <b>{ achievement.playerName + " - "}</b>
+                                                    <b>{ achievement.achievementName }</b>
+                                                    <b>{achievement.victimName !== undefined ? " (" + achievement.victimName + ")" : ""}</b>
+                                                </span>
                                             }
                                         </ListGroupItem>
                                     )
