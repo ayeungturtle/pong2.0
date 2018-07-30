@@ -21,7 +21,7 @@ export class NewPlayerComponent extends React.Component {
                 isValid: false,
                 firstName: null,
                 lastName: null,
-                nickName: null
+                nickName: null,
             }
         }
     }
