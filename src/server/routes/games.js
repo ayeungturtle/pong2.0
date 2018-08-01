@@ -54,7 +54,8 @@ router.post('/api/games', (req, res) => {
             .insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: streakId,
-                victimId: req.body.loserId                
+                victimId: req.body.loserId,
+                gameId: addedGame[0]           
             })
             .catch((error) => {
                 res.status(500).json({ error })
@@ -80,7 +81,8 @@ router.post('/api/games', (req, res) => {
             .insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: donutId,
-                victimId: req.body.loserId                
+                victimId: req.body.loserId,
+                gameId: addedGame[0]                                           
             })
             .catch((error) => {
                 res.status(500).json({ error })
@@ -99,7 +101,8 @@ router.post('/api/games', (req, res) => {
             .insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: 13,
-                victimId: req.body.loserId
+                victimId: req.body.loserId,
+                gameId: addedGame[0]                           
             })
             .catch((error) => {
                 res.status(500).json({ error })
@@ -124,7 +127,8 @@ router.post('/api/games', (req, res) => {
             .insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: upsetId,
-                victimId: req.body.loserId
+                victimId: req.body.loserId,
+                gameId: addedGame[0]                           
             })
             .catch((error) => {
                 res.status(500).json({ error })
