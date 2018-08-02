@@ -20,35 +20,27 @@ exports.up = function(knex, Promise) {
         p.string('firstName', 50).notNull();
         p.string('lastName', 50).notNull();
         p.string('nickName', 50).nullable().defaultTo(null);
-        p.integer('lut_role').notNull();
+        p.integer('lut_role').unsigned().notNull();
         p.dateTime('dateTimeCreated', 6).nullable().defaultTo(knex.fn.now(6));
-        p.foreign('lut_role').unsigned().references('id').inTable('lut_roles').onDelete('restrict').onUpdate('cascade');        
     })
     .createTable('games', function(g) {
         g.increments('id').primary();
-        g.integer('winnerId').notNull();
-        g.integer('loserId').notNull();
+        g.integer('winnerId').unsigned().notNull();
+        g.integer('loserId').unsigned().notNull();
         g.integer('winnerScore').nullable().defaultTo(null);
         g.integer('loserScore').nullable().defaultTo(null);
-        g.integer('lutGameMode').nullable().defaultTo(null);
+        g.integer('lutGameMode').unsigned().nullable().defaultTo(null);
         g.dateTime('dateTime', 6).nullable().defaultTo(knex.fn.now(6));
         g.string('notes', 50).nullable().defaultTo(null);
-        g.foreign('winnerId').unsigned().references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
-        g.foreign('loserId').unsigned().references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
-        g.foreign('lutGameMode').unsigned().references('id').inTable('lut_game_modes').onDelete('restrict').onUpdate('cascade');
     })
     .createTable('achievements', function(a) {
         a.increments('id').primary();
-        a.integer('playerId').nullable().defaultTo(null);
-        a.integer('lutAchievementTypeId').nullable().defaultTo(null);
-        a.integer('victimId').nullable().defaultTo(null);
-        a.integer('gameId').nullable().defaultTo(null);
+        a.integer('playerId').unsigned().nullable().defaultTo(null);
+        a.integer('lutAchievementTypeId').unsigned().nullable().defaultTo(null);
+        a.integer('victimId').unsigned().nullable().defaultTo(null);
+        a.integer('gameId').unsigned().nullable().defaultTo(null);
         a.dateTime('dateTime', 6).nullable().defaultTo(knex.fn.now(6));
         a.string('notes', 50).nullable().defaultTo(null);
-        a.foreign('playerId').unsigned().references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
-        a.foreign('victimId').unsigned().references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
-        a.foreign('lutAchievementTypeId').unsigned().references('id').inTable('lut_achievement_types').onDelete('restrict').onUpdate('cascade');
-        a.foreign('gameId').unsigned().references('id').inTable('games').onDelete('restrict').onUpdate('cascade');
     })
 };
 
@@ -100,3 +92,75 @@ exports.down = function(knex, Promise) {
 //         {id: 15, achievementType: 'Underdog Hero', notes: 'win with <= 15% win probability'}, 
 //     ])
 // })
+
+
+// p.foreign('lut_role').references('id').inTable('lut_roles').onDelete('RESTRICT').onUpdate('CASCADE');        
+
+// g.foreign('winnerId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+// g.foreign('loserId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+// g.foreign('lutGameMode').references('id').inTable('lut_game_modes').onDelete('RESTRICT').onUpdate('CASCADE');
+
+// a.foreign('playerId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+// a.foreign('victimId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+// a.foreign('lutAchievementTypeId').references('id').inTable('lut_achievement_types').onDelete('RESTRICT').onUpdate('CASCADE');
+// a.foreign('gameId').references('id').inTable('games').onDelete('RESTRICT').onUpdate('CASCADE');
+
+
+// exports.up = function(knex, Promise) {
+//     return playersForeignKeys()
+//     .then(gamesForeignKeys)
+//     .then(createAddressTable)
+
+//     function playersForeignKeys() {
+//         return knex.schema.table('players', function(p) {
+//             p.foreign('lut_role').references('id').inTable('lut_roles').onDelete('RESTRICT').onUpdate('CASCADE');
+//         });
+//     }
+
+//     function gamesForeignKeys() {
+//         return knex.schema.table('games', function(g) {
+//             g.foreign('winnerId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+//             g.foreign('loserId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+//             g.foreign('lutGameMode').references('id').inTable('lut_game_modes').onDelete('RESTRICT').onUpdate('CASCADE');
+//         });
+//     }
+
+//     function achievementsForeignKeys() {
+//         return knex.schema.table('achievements', function(g) {
+//             a.foreign('playerId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+//             a.foreign('victimId').references('id').inTable('players').onDelete('RESTRICT').onUpdate('CASCADE');
+//             a.foreign('lutAchievementTypeId').references('id').inTable('lut_achievement_types').onDelete('RESTRICT').onUpdate('CASCADE');
+//             a.foreign('gameId').references('id').inTable('games').onDelete('RESTRICT').onUpdate('CASCADE');
+//         });
+//     }
+    
+// };
+
+// exports.down = function(knex, Promise) {
+//     return dropPlayersForeignKeys()
+//     .then(dropGamesForeignKeys)
+//     .then(dropAchievementsForeignKeys)
+
+//     function dropPlayersForeignKeys() {
+//         return knex.schema.table('players', function(p) {
+//             p.dropForeign('lut_role');
+//         });
+//     }
+
+//     function dropGamesForeignKeys() {
+//         return knex.schema.table('games', function(g) {
+//             g.dropForeign('winnerId');
+//             g.dropForeign('loserId');
+//             g.dropForeign('lutGameMode');
+//         });
+//     }
+
+//     function dropAchievementsForeignKeys() {
+//         return knex.schema.table('achievements', function(g) {
+//             a.dropForeign('playerId');
+//             a.dropForeign('victimId');
+//             a.dropForeign('lutAchievementTypeId');
+//             a.dropForeign('gameId');
+//         });
+//     }
+// };
