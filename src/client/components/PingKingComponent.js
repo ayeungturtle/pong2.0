@@ -97,23 +97,31 @@ export class PingKingComponent extends React.Component {
                 if (queuedPlayer.id === removePlayer.id)
                     tempPlayerQueue.splice(index, 1);
             });
-            for (var i = 0; i < this.state.inactivePlayers.length; i++) {
-                nextInactivePlayerString = this.formatPlayerName(this.state.inactivePlayers[i]).toLowerCase();
-                removePlayerString = this.formatPlayerName(removePlayer).toLowerCase();
-                if (i === 0) {
-                    if (removePlayerString < nextInactivePlayerString) {
-                        tempInactivePlayers.unshift(removePlayer);
-                        break;
-                    }
-                } else {
-                    previousInactivePlayerString = this.formatPlayerName(this.state.inactivePlayers[i-1]).toLowerCase();
-                    if (removePlayerString > previousInactivePlayerString && removePlayerString < nextInactivePlayerString){
-                        tempInactivePlayers = tempInactivePlayers.slice(0, i).concat(removePlayer, tempInactivePlayers.slice(i));
-                        break;
-                    }
-                    else if (i === this.state.inactivePlayers.length - 1)
-                        tempInactivePlayers = tempInactivePlayers.concat(removePlayer);
-                }   
+            if(this.state.inactivePlayers.length === 0)
+                tempInactivePlayers = [removePlayer];
+            else {
+                for (var i = 0; i < this.state.inactivePlayers.length; i++) {
+                    nextInactivePlayerString = this.formatPlayerName(this.state.inactivePlayers[i]).toLowerCase();
+                    removePlayerString = this.formatPlayerName(removePlayer).toLowerCase();
+                    if (i === 0) {
+                        if (removePlayerString < nextInactivePlayerString) {
+                            tempInactivePlayers.unshift(removePlayer);
+                            break;
+                        }
+                        else if (this.state.inactivePlayers.length === 1) {
+                            tempInactivePlayers.push(removePlayer)
+                            break;
+                        }
+                    } else {
+                        previousInactivePlayerString = this.formatPlayerName(this.state.inactivePlayers[i-1]).toLowerCase();
+                        if (removePlayerString > previousInactivePlayerString && removePlayerString < nextInactivePlayerString){
+                            tempInactivePlayers = tempInactivePlayers.slice(0, i).concat(removePlayer, tempInactivePlayers.slice(i));
+                            break;
+                        }
+                        else if (i === this.state.inactivePlayers.length - 1)
+                            tempInactivePlayers = tempInactivePlayers.concat(removePlayer);
+                    }   
+                }
             }
         }
         this.setState({ inactivePlayers: tempInactivePlayers, playerQueue: tempPlayerQueue })
