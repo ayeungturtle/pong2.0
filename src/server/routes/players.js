@@ -38,13 +38,15 @@ router.post('/api/players', (req, res) => {
     .insert({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        nickName: req.body.nickName
+        nickName: req.body.nickName,
+        lutRole: req.body.lutRole
     })
     .then(addedPlayer => {
         res.status(201).json({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-            nickName: req.body.nickName
+            nickName: req.body.nickName,
+            lut_role: req.body.lutRole            
         })
     })
     .catch((error) => {

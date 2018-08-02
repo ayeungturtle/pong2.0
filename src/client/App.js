@@ -61,7 +61,8 @@ export default class App extends Component {
             body: JSON.stringify ({
                 firstName: newPlayer.firstName,
                 lastName: newPlayer.lastName,
-                nickName: newPlayer.nickName === '' ? null : newPlayer.nickName
+                nickName: newPlayer.nickName === '' ? null : newPlayer.nickName,
+                lutRole: 1
             })
         })
         .then(res => {

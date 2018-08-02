@@ -2,9 +2,9 @@ var db = require('knex')({
     client: 'mysql',
     connection: {
       host : '127.0.0.1',
-      user : 'root',
+      user : 'pingPong',
       password : 'asdf;lkj',
-      database : 'ping_pong'
+      database : 'ping_pong1'
     }
 });
 

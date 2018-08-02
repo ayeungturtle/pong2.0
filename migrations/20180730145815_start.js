@@ -20,27 +20,35 @@ exports.up = function(knex, Promise) {
         p.string('firstName', 50).notNull();
         p.string('lastName', 50).notNull();
         p.string('nickName', 50).nullable().defaultTo(null);
-        p.integer('lut_role').unsigned().notNull();
+        p.integer('lutRole').notNull();
         p.dateTime('dateTimeCreated', 6).nullable().defaultTo(knex.fn.now(6));
+        p.foreign('lutRole').references('id').inTable('lut_roles').onDelete('restrict').onUpdate('cascade');
     })
     .createTable('games', function(g) {
         g.increments('id').primary();
         g.integer('winnerId').unsigned().notNull();
-        g.integer('loserId').unsigned().notNull();
+        g.integer('loserId').unsigned().notNull();;
         g.integer('winnerScore').nullable().defaultTo(null);
         g.integer('loserScore').nullable().defaultTo(null);
-        g.integer('lutGameMode').unsigned().nullable().defaultTo(null);
+        g.integer('lutGameMode').nullable().defaultTo(null);
         g.dateTime('dateTime', 6).nullable().defaultTo(knex.fn.now(6));
         g.string('notes', 50).nullable().defaultTo(null);
+        g.foreign('winnerId').references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
+        g.foreign('loserId').references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
+        g.foreign('lutGameMode').references('id').inTable('lut_game_modes').onDelete('restrict').onUpdate('cascade');
     })
     .createTable('achievements', function(a) {
         a.increments('id').primary();
         a.integer('playerId').unsigned().nullable().defaultTo(null);
-        a.integer('lutAchievementTypeId').unsigned().nullable().defaultTo(null);
+        a.integer('lutAchievementTypeId').index().nullable().defaultTo(null);
         a.integer('victimId').unsigned().nullable().defaultTo(null);
         a.integer('gameId').unsigned().nullable().defaultTo(null);
         a.dateTime('dateTime', 6).nullable().defaultTo(knex.fn.now(6));
         a.string('notes', 50).nullable().defaultTo(null);
+        a.foreign('playerId').references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
+        a.foreign('victimId').references('id').inTable('players').onDelete('restrict').onUpdate('cascade');
+        a.foreign('lutAchievementTypeId').references('id').inTable('lut_achievement_types').onDelete('restrict').onUpdate('cascade');
+        a.foreign('gameId').references('id').inTable('games').onDelete('restrict').onUpdate('cascade');
     })
 };
 
@@ -164,3 +172,14 @@ exports.down = function(knex, Promise) {
 //         });
 //     }
 // };
+
+
+// ALTER TABLE `ping_pong1`.`players` 
+// ADD INDEX `lut_role_idx` (`lut_role` ASC) VISIBLE;
+// ;
+// ALTER TABLE `ping_pong1`.`players` 
+// ADD CONSTRAINT `lut_role`
+//   FOREIGN KEY (`lut_role`)
+//   REFERENCES `ping_pong1`.`lut_roles` (`id`)
+//   ON DELETE NO ACTION
+//   ON UPDATE NO ACTION;
