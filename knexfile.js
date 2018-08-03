@@ -4,7 +4,7 @@ module.exports = {
 
     development: {
         client: 'mysql',
-        verstion: '8.0',
+        version: '8.0',
         connection: {
           database: 'ping_pong1',
           user:     'pingPong',
@@ -21,7 +21,7 @@ module.exports = {
 
     production: {
         client: 'mysql',
-        verstion: '8.0',        
+        version: '8.0',        
         connection: {
             database: 'ping_pong_production',
             user:     'pingPong',
