@@ -114,13 +114,15 @@ router.post('/api/games', (req, res) => {
             }) 
         }
         
-        //////// Upsets
+        //////// Upsets - only awarded when both players have played over 10 games
 
-        var upsetId = null;
-        if (req.body.winnerStats.winProbability <= .15)
-            upsetId = 15;
-        else if (req.body.winnerStats.winProbability <= .33)
-            upsetId = 14;
+        var upsetId = null;    
+        if ((req.body.winnerStats.totalWins + req.body.winnerStats.totalLosses > 10) && (req.body.loserStats.totalWins + req.body.loserStats.totalLosses > 10)) {
+            if (req.body.winnerStats.winProbability <= .15)
+                upsetId = 15;
+            else if (req.body.winnerStats.winProbability <= .33)
+                upsetId = 14;
+        }
         
         if (upsetId != null) {
             db('achievements')
