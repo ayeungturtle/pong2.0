@@ -2,18 +2,17 @@ const express = require ('express');
 const router = express.Router();
 const db = require ('../db/knex');
 
-router.post('/api/games', (req, res) => {
-    var resBody;
-    db('games')
-    .insert({
-        winnerId: req.body.winnerId,
-        loserId: req.body.loserId,
-        winnerScore: req.body.winnerScore,
-        loserScore: req.body.loserScore,
-        lutGameMode: req.body.gameMode
-    })
-    .then(addedGame => {
-        resBody = {   // !!!! can I get these properties from addedGame directly
+router.post('/api/games', async (req, res) => {
+    try {
+        const addedGame = await db('games').insert({
+            winnerId: req.body.winnerId,
+            loserId: req.body.loserId,
+            winnerScore: req.body.winnerScore,
+            loserScore: req.body.loserScore,
+            lutGameMode: req.body.gameMode
+        })
+        
+        var resBody  = {  
             winnerId: req.body.winnerId,
             loserId: req.body.loserId,
             winnerScore: req.body.winnerScore,
@@ -42,26 +41,23 @@ router.post('/api/games', (req, res) => {
             15: "Underdog Hero"
         }
 
+        
         //////// Streaks
 
         var streakId = null;
         if ((req.body.winnerStats.streak + 1) % 5 === 0 && req.body.winnerStats.streak < 50)    // add one because another game has been won, <50 because streak awards only go up to 50
             streakId = (req.body.winnerStats.streak + 1) / 5;
         if (streakId !== null) {
-            db('achievements')
-            .insert({
+            await db('achievements').insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: streakId,
                 victimId: req.body.loserId,
                 gameId: addedGame[0]           
-            })
-            .catch((error) => {
-                res.status(500).json({ error })
             });
             resBody.achievements.push({
                 playerName: req.body.winnerName,
                 achievementName: achievementNames[streakId]     
-            })             
+            }) 
         }
         
         //////// Donuts
@@ -75,43 +71,35 @@ router.post('/api/games', (req, res) => {
         }
 
         if (donutId != null) {
-            db('achievements')
-            .insert({
+            await db('achievements').insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: donutId,
                 victimId: req.body.loserId,
                 gameId: addedGame[0]                                           
-            })
-            .catch((error) => {
-                res.status(500).json({ error })
             });
             resBody.achievements.push({
                 playerName: req.body.winnerName,
                 achievementName: achievementNames[donutId]  ,
                 victimName: req.body.loserName  
-            })  
+            }) ;
         }
-        
-        //////// Buzzkill
 
-        if (req.body.loserStats.streak >= 5) {
-            db('achievements')
-            .insert({
+         //////// Buzzkill
+
+         if (req.body.loserStats.streak >= 5) {
+            await db('achievements').insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: 13,
                 victimId: req.body.loserId,
                 gameId: addedGame[0]                           
             })
-            .catch((error) => {
-                res.status(500).json({ error })
-            });
             resBody.achievements.push({
                 playerName: req.body.winnerName,
                 achievementName: "Buzzkill",
                 victimName: req.body.loserName                      
             }) 
         }
-        
+
         //////// Upsets - only awarded when both players have played over 10 games
 
         var upsetId = null;    
@@ -123,28 +111,24 @@ router.post('/api/games', (req, res) => {
         }
         
         if (upsetId != null) {
-            db('achievements')
-            .insert({
+            await db('achievements').insert({
                 playerId: req.body.winnerId,
                 lutAchievementTypeId: upsetId,
                 victimId: req.body.loserId,
                 gameId: addedGame[0]                           
-            })
-            .catch((error) => {
-                res.status(500).json({ error })
             });
             resBody.achievements.push({
                 playerName: req.body.winnerName,
                 achievementName: achievementNames[upsetId],
                 victimName: req.body.loserName                      
-            }) 
+            });
         }
-        
+
         res.status(201).json(resBody);
-    })
-    .catch((error) => {
+    }
+    catch(error) {
         res.status(500).json({ error })
-    });
+    }
 });
 
 module.exports = router;
