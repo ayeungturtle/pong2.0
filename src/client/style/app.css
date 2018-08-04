@@ -1,6 +1,29 @@
-.active-players {
+.active-players-rr {
+    height: 200px;
+    overflow-y: auto;
     width: 90%;
-    float: left;
+    float: left
+}
+
+.active-players-pk {
+    height: 450px;
+    overflow-y: auto;
+    width: 90%;
+    float: left
+}
+
+.active-player {
+    font-size: 12px;
+    text-align: center;
+}
+
+.round-queue {
+    height: 185px;
+    overflow-y: auto;
+    width: 93%;
+    font-size: 12px;
+    text-align: center;
+    
 }
 
 .alert-bottom {
@@ -19,7 +42,7 @@
 }
 
 .button-round-generate {
-    margin-left: 75px;
+    margin-left: 10px;
 }
 
 .header-row {
@@ -72,16 +95,6 @@
 .player1 {
     background-color: hsla(0, 60%, 52%, 0.63);
     border-width: 4px 4px 4px 2px;    
-}
-
-.player-queue {
-    width: 90%;
-    float: left;
-}
-
-.round-queue {
-    width: 90%;
-    text-align: center;
 }
 
 .playerStats {

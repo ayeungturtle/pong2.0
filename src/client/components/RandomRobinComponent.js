@@ -344,8 +344,8 @@ export class RandomRobinComponent extends React.Component {
                                 })
                             }
                         </DropdownButton>
-                        <Button className="button-round-generate" bsStyle="warning" onClick={() => this.handleRoundButton()}>
-                            Round +
+                        <Button className="button-round-generate" bsStyle="primary" onClick={() => this.handleRoundButton()}>
+                            +
                         </Button>
                     </Row>
                     <br/>
@@ -353,11 +353,11 @@ export class RandomRobinComponent extends React.Component {
                         this.state.activePlayers.length > 0 && 
                         <Row>
                             <div className="title-round">Active Players:</div>
-                            <ListGroup>
+                            <ListGroup className="active-players-rr">
                                 {
                                     this.state.activePlayers.map((player, index) => {
                                         return(
-                                            <ListGroupItem key={index} value={player} className="active-players">
+                                            <ListGroupItem key={index} value={player} className="active-player">
                                                 {this.formatPlayerName(player)}
                                                 <button className="pull-right button-x" onClick={() => this.deactivatePlayer(player)}>X</button>
                                             </ListGroupItem>
@@ -367,18 +367,17 @@ export class RandomRobinComponent extends React.Component {
                             </ListGroup>
                         </Row>
                     }
-                    <br/>
                     <Row>
                         <Col md={6} sm={6}>
                             {
                                 this.state.currentRound.length > 0 &&
                                 <Row>
                                     <div className="title-round">Current Round:</div>
-                                    <ListGroup>
+                                    <ListGroup className="round-queue">
                                         {
                                             this.state.currentRound.map((match, index) => {
                                                 return(
-                                                    <ListGroupItem key={index} value={match} className="round-queue">
+                                                    <ListGroupItem key={index} value={match}>
                                                         {this.formatMatchName(match)}
                                                     </ListGroupItem>
                                                 )
@@ -393,11 +392,11 @@ export class RandomRobinComponent extends React.Component {
                                 this.state.nextRound.length > 0 &&
                                     <Row>
                                         <div className="title-round">Next Round:</div>
-                                        <ListGroup>
+                                        <ListGroup className="round-queue">
                                             {
                                                 this.state.nextRound.map((match, index) => {
                                                     return(
-                                                        <ListGroupItem key={index} value={match} className="round-queue">
+                                                        <ListGroupItem key={index} value={match} >
                                                             {this.formatMatchName(match)}
                                                         </ListGroupItem>
                                                     )
