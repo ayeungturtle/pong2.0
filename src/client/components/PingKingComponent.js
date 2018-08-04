@@ -323,11 +323,11 @@ export class PingKingComponent extends React.Component {
                     </Row>
                     <Row className="white-divider"/>
                     <Row>
-                        <ListGroup>
+                        <ListGroup className="active-players-pk">
                             {
                                 this.state.playerQueue.map((player, index) => {
                                     return(
-                                        <ListGroupItem key={index} value={player} className="player-queue">
+                                        <ListGroupItem key={index} value={player} className="active-player">
                                             {this.formatPlayerName(player)}
                                             <button className="pull-right button-x" onClick={() => this.removeFromQueue(player)}>X</button>
                                         </ListGroupItem>
