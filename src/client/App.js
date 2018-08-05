@@ -17,15 +17,18 @@ export default class App extends Component {
                 lastName: null,
                 nickName: null
             },
-            alerts: [],
+            alert: {
+                alertType: 0,
+                alertContent: null
+            }
         };
 
         this.showNewPlayerModal = this.showNewPlayerModal.bind(this);
         this.hideNewPlayerModal = this.hideNewPlayerModal.bind(this);
-        this.saveNewPlayer = this.saveNewPlayer.bind(this);
         this.dismissAlert = this.dismissAlert.bind(this);
         this.getPlayers = this.getPlayers.bind(this);
         this.alertGameSaveFailure = this.alertGameSaveFailure.bind(this);
+        this.addAlert = this.addAlert.bind(this);
     }
 
     componentDidMount() {
@@ -54,39 +57,6 @@ export default class App extends Component {
         });
     };
 
-    saveNewPlayer(newPlayer) {
-        fetch('api/players', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify ({
-                firstName: newPlayer.firstName,
-                lastName: newPlayer.lastName,
-                nickName: newPlayer.nickName === '' ? null : newPlayer.nickName,
-                lutRole: 1
-            })
-        })
-        .then(res => {
-            if (res.status === 201) {
-                const newPlayer = res.json()
-                .then(newPlayer => {
-                    this.setState((prevState) => ({
-                        newPlayer:{
-                            firstName: newPlayer.firstName,
-                            lastName: newPlayer.lastName,
-                            nickName: newPlayer.nickName
-                        },
-                        alerts: [...prevState.alerts, {alertType: 1, newPlayer: newPlayer}]    /////!!!!! used to just be 1
-                    }))
-                });
-                setTimeout(() => this.dismissAlert(), 5000);
-            }
-            else {
-                this.setState((prevState) => ({ alerts: [...prevState.alerts, {alertType: 2 }]}));
-                setTimeout(() => this.dismissAlert(), 5000);                
-            }
-        })
-    }
-
     alertGameSaveFailure() {
         this.setState({ alertType: 4 });
         setTimeout(() => this.dismissAlert(), 5000);
@@ -96,8 +66,13 @@ export default class App extends Component {
         this.setState({ alertType})
     }
 
+    addAlert(alert) {
+        this.setState({ alert: alert });
+        setTimeout(() => this.dismissAlert(), 5000);
+    }
+
     dismissAlert() {
-        this.setState({ alertType: 0 })
+        this.setState({ alert: {alertType: 0, alertContent: null} })
     }
 
     render() {
@@ -120,7 +95,7 @@ export default class App extends Component {
                                 <NewPlayerComponent 
                                     newPlayerModal={this.state.newPlayerModal}
                                     hideNewPlayerModal={this.hideNewPlayerModal}
-                                    saveNewPlayer={(newPlayer) => this.saveNewPlayer(newPlayer)}
+                                    addAlert={(newAlert) => this.addAlert(newAlert)}
                                 />
                             </Tab>
                         </Tabs>
@@ -136,14 +111,12 @@ export default class App extends Component {
                 <NewPlayerModalComponent 
                     newPlayerModal={this.state.newPlayerModal}
                     hideNewPlayerModal={this.hideNewPlayerModal}
-                    saveNewPlayer={(newPlayer) => this.saveNewPlayer(newPlayer)}
+                    addAlert={(newAlert) => this.addAlert(newAlert)}
                 />
                 <div className="alert-bottom">
                     <AlertComponent
-                        alertType={this.state.alertType}
-                        newPlayer={this.state.newPlayer}
+                        alert={this.state.alert}
                         dismissAlert={this.dismissAlert}
-                        lastGameSaved={this.state.lastGameSaved}
                     />
                 </div>
 

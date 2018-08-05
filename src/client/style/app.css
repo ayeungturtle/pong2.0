@@ -30,7 +30,7 @@
     position: fixed;
     bottom: 5px;
     right: 2%;
-    height: 200px;
+    height: 50px;
     padding: 10px;
 }
 
@@ -40,6 +40,7 @@
     border-color:  rgb(192, 192, 192);
     border-width: 1px;
     color: gray;
+    font-weight: 700;
 }
 
 .button-round-generate {
@@ -52,16 +53,6 @@
 
 .add-player {
     height: 100%;
-}
-
-.darkPlayer1 {
-    background-color: hsla(0, 59%, 37%, 0.63);
-    color: white;   
-}
-
-.darkPlayer2 {
-    background-color: hsla(219, 58%, 49%, 0.527); 
-    color: white;   
 }
 
 .dismiss-player-button {
@@ -89,13 +80,23 @@
 }
 
 .player2 {
-    background-color: hsla(219, 90%, 62%, 0.705);
+    background-color: hsl(219, 96%, 82%);
     border-width: 4px 2px 4px 4px;
 }
 
 .player1 {
-    background-color: hsla(0, 60%, 52%, 0.63);
+    background-color: hsl(0, 100%, 86%);
     border-width: 4px 4px 4px 2px;    
+}
+
+.darkPlayer1 {
+    background-color: hsl(0, 42%, 35%);
+    color: white;   
+}
+
+.darkPlayer2 {
+    background-color: hsl(219, 44%, 36%); 
+    color: white;   
 }
 
 .playerStats {
@@ -132,6 +133,17 @@
     border-style: solid;
     border-color: black;
     border-width: 0px 0px 4px 0px;
+    padding-top: 1px;
+}
+
+.padding-top-8 {
+    padding-top: 8px;
+}
+
+.charcoal {
+    background-color:rgb(87, 87, 87);
+    color: white;
+    font-weight: 500;
 }
 
 .game-feed {
