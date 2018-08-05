@@ -376,25 +376,25 @@ export class PingKingComponent extends React.Component {
                     </Row>
                     <Row>
                         <Col md={4} sm={4} className="playerStats playerStats2">
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer2">
                                 {
                                     this.state.stats.player2.totalWins !== null && this.state.stats.player2.totalLosses !== null &&
                                         <span className="playerStatsContent">{this.state.stats.player2.totalWins + " - " + this.state.stats.player2.totalLosses}</span>
                                 }
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer2">
                                 {
                                     this.state.stats.player2.h2hWins !== null &&
                                         <span className="playerStatsContent">{this.state.stats.player2.h2hWins}</span>
                                 }
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer2">
                                 {
                                     this.state.stats.player2.winProbability !== null &&
                                         <span className="playerStatsContent">{this.formatPercent(this.state.stats.player2.winProbability)}</span>
                                 }
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer2">
                                 {
                                     this.state.stats.player2.streak !== null &&                                    
                                         <span>{this.state.stats.player2.streak}</span>
@@ -402,39 +402,39 @@ export class PingKingComponent extends React.Component {
                             </Row>
                         </Col>
                         <Col md={4} sm={4} className="playerStats playerStatsCenter">
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row charcoal padding-top-8">
                                 Overall Record
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row charcoal padding-top-8">
                                 H2H Wins
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row charcoal padding-top-8">
                                 Win Probability
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row charcoal padding-top-8">
                                 Streak
                             </Row>
                         </Col>
                         <Col md={4} sm={4} className="playerStats playerStats1">
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer1">
                                 {
                                     this.state.stats.player1.totalWins !== null && this.state.stats.player1.totalLosses !== null &&
                                         <span>{this.state.stats.player1.totalWins + " - " + this.state.stats.player1.totalLosses}</span>
                                 }
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer1">
                                 {
                                     this.state.stats.player1.h2hWins !== null &&
                                         <span>{this.state.stats.player1.h2hWins}</span>
                                 }
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer1">
                                 {
                                     this.state.stats.player1.winProbability !== null &&
                                         <span>{this.formatPercent(this.state.stats.player1.winProbability)}</span>
                                 }
                             </Row>
-                            <Row className="player-stats-row">
+                            <Row className="player-stats-row darkPlayer1">
                                 {
                                     this.state.stats.player1.streak !== null &&
                                         <span>{this.state.stats.player1.streak}</span>

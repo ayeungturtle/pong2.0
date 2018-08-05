@@ -9,7 +9,8 @@ export class NewPlayerComponent extends React.Component {
         this.clearState = this.clearState.bind(this);
         this.close = this.close.bind(this);
         this.validate = this.validate.bind(this);
-        this.save = this.save.bind(this);
+        this.saveNewPlayer = this.saveNewPlayer.bind(this);
+        this.handleSave = this.handleSave.bind(this);
       
         this.state = {
             newPlayer: {
@@ -70,7 +71,7 @@ export class NewPlayerComponent extends React.Component {
         else {
             this.setState({
                 validationState: {
-                    ...this.state.validationState, 
+                    ...this.state.validationState,
                     isValid: false,
                     firstName: this.state.newPlayer.firstName == "" || this.state.newPlayer.firstName.length < 3 ? 'error' : 'success',
                     lastName: this.state.newPlayer.lastName == "" || this.state.newPlayer.lastName.length < 3 ? 'error' : 'success'
@@ -80,11 +81,44 @@ export class NewPlayerComponent extends React.Component {
         }
     }
 
-    save() {
+    handleSave() {
         if (this.validate()) {
-            this.props.saveNewPlayer(this.state.newPlayer);
+            this.saveNewPlayer(this.state.newPlayer);
             this.clearState();
         }
+    }
+
+    saveNewPlayer (newPlayer) {
+        fetch('api/players', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify ({
+                firstName: newPlayer.firstName,
+                lastName: newPlayer.lastName,
+                nickName: newPlayer.nickName === '' ? null : newPlayer.nickName,
+                lutRole: 1
+            })
+        })
+        .then(res => {
+            if (res.status === 201) {
+                res.json()
+                .then(resBody => {
+                    this.props.addAlert({
+                        alertType: 1,
+                        alertContent: "New player saved: " + resBody.firstName + ' "' + resBody.nickName + '" ' + resBody.lastName
+                    });
+                });
+            }
+            else {
+                this.props.addAlert({
+                    alertType: 2,
+                    alertContent: null
+                });
+            }
+        })
+        .catch((error) => {
+            console.log( error )
+        });
     }
 
     render() {
@@ -127,7 +161,7 @@ export class NewPlayerComponent extends React.Component {
                     />
                 </FormGroup>
                 <Button className="pull-left" bsStyle="warning" bsSize="large" onClick={this.close}>Cancel</Button>
-                <Button className="pull-right" bsStyle="success" bsSize="large" onClick={this.save}>Save</Button>
+                <Button className="pull-right" bsStyle="success" bsSize="large" onClick={this.handleSave}>Save</Button>
             </Col>
         </Grid>
       );

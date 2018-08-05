@@ -17,17 +17,17 @@ export class AlertComponent extends React.Component {
     }
   
     render() {
-        switch(this.props.alertType) {
+        switch(this.props.alert.alertType) {
             case this.state.alertTypes.newPlayerSaveSuccess:
                 return (
                     <Alert bsStyle="success" className="alert-bottom" onDismiss={this.props.dismissAlert}>
-                        {"New player saved: " + this.props.newPlayer.firstName + " " + this.props.newPlayer.lastName}
+                        { this.props.alert.alertContent }
                     </Alert>
                 );
                 break;
             case this.state.alertTypes.newPlayerSaveFailure:
                 return (
-                    <Alert bsStyle="danger" className="pull-down" onDismiss={this.props.dismissAlert}>
+                    <Alert bsStyle="danger" className="alert-bottom" onDismiss={this.props.dismissAlert}>
                        New player failed to save.
                     </Alert>
                 );
