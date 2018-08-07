@@ -28,7 +28,9 @@ module.exports = {
     ]
   },
   devServer: {
+    host: '0.0.0.0', //this line can be deleted after debugging
     port: 3000,
+    disableHostCheck: true, //this line can be deleted after debugging
     open: false,
     proxy: {
       '/api': 'http://localhost:8080'

@@ -46,6 +46,15 @@ export class PingKingComponent extends React.Component {
 
     componentDidMount() {
         this.getPlayers();
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+            if (keyName === 'ArrowLeft')
+                this.incrementScore('player2');
+            else if (keyName === 'ArrowRight')
+                this.incrementScore('player1');
+            else if (keyName === 'Enter')
+                this.submitGame();
+        });
     }
 
     getPlayers() {
@@ -403,13 +412,13 @@ export class PingKingComponent extends React.Component {
                         </Col>
                         <Col md={4} sm={4} className="playerStats playerStatsCenter">
                             <Row className="player-stats-row charcoal padding-top-8">
-                                Overall Record
+                                Overall
                             </Row>
                             <Row className="player-stats-row charcoal padding-top-8">
-                                H2H Wins
+                                H2H
                             </Row>
                             <Row className="player-stats-row charcoal padding-top-8">
-                                Win Probability
+                                Win Prob
                             </Row>
                             <Row className="player-stats-row charcoal padding-top-8">
                                 Streak

@@ -20,7 +20,8 @@ export default class App extends Component {
             alert: {
                 alertType: 0,
                 alertContent: null
-            }
+            },
+            currentTab: 0,
         };
 
         this.showNewPlayerModal = this.showNewPlayerModal.bind(this);
@@ -29,6 +30,7 @@ export default class App extends Component {
         this.getPlayers = this.getPlayers.bind(this);
         this.alertGameSaveFailure = this.alertGameSaveFailure.bind(this);
         this.addAlert = this.addAlert.bind(this);
+        this.handleClickTab = this.handleClickTab.bind(this);
     }
 
     componentDidMount() {
@@ -75,12 +77,17 @@ export default class App extends Component {
         this.setState({ alert: {alertType: 0, alertContent: null} })
     }
 
+    handleClickTab(eventKey) {
+        console.log(eventKey);
+        this.setState({ currentTab: eventKey })
+    }
+
     render() {
         return (
             <Grid>
                 <Row className="header-row">
                     <Col md={12}>
-                        <Tabs defaultActiveKey={0} id="Game Mode Tabs">
+                        <Tabs defaultActiveKey={0} id="Game Mode Tabs" activekey={this.state.currentTab} onSelect={this.handleClickTab()}>
                             <Tab eventKey={0} title="Ping King">
                                 <PingKingComponent
                                 alertGameSaveFailure={() => this.alertGameSaveFailure()}
